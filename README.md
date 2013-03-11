@@ -1,11 +1,15 @@
 jQuery.videontage
 =================
 
+## TODO
+1.  Ability to prerender and create image map for a given directory of files
+2.  Ability to prerender entire video with high resolution and display, rather than doing it on the fly
+
 videontage is an HTML5 montage generator for videos. You create an image map repository, see example provided on how to generate the image map for a given set of photographs.
 
 ## Example usage:
 
-     $('canvas').videontage({
+    $('canvas').videontage({
     	imagePath: 'cutts/',
     	imageMap: cuttsMap,
     	cols: $('input#cols').val(),
@@ -21,6 +25,22 @@ videontage is an HTML5 montage generator for videos. You create an image map rep
     		$('div#loading-message').html( Math.round( ((100 * data.count) / data.total), 2 ) + '% loaded');
     	}
     });
+
+## What is the imagemap?
+
+The image map is a JSON object that contains all the photos to use with the plugin and the dominant colour for each photo. I have used [color-thief-master](https://github.com/Dashboard-X/codropes-examples/tree/master/color-thief-master/color-thief-master) by [dineshkummarc](https://github.com/dineshkummarc) to generate this map. The object is layed out as below:
+
+    {
+        "fileIndex": {
+            "filename": "file1.jpg",
+            "dominantColor": {
+                "r":201,
+                "g":197,
+                "b":201
+            }
+        },
+        ...
+    }
 
 ## Options
 1.	width: integer, if not specified gets width from canvas element itself
