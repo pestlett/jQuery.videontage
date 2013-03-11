@@ -19,7 +19,7 @@
  * Date: 20130310
  */
 (function( $, undefined ) {
-  "use strict"; // What a load of Crockford :p
+	"use strict"; // What a load of Crockford :p
 
 	var defaults,
 		euclideanDistance, drawFrame, findClosestMatch, preloadResources,
