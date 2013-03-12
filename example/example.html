@@ -14,45 +14,64 @@
 	</head>
 	<body>
 		<div class="canvas-container">
-				<canvas id="canvas1" width="640" height="360">
-					<video id="myVideo" width="640" height="360" controls="true">
-						<source src="videos/cutts.mp4" type="video/mp4"></source>
-					</video>
-				</canvas>
-				<div>
-					<button id="play" disabled>Play</button>
-					<button id="stop">Stop</button>
-					<button id="update">Update</button>
-				</div>
-				<div>
-					<input type='text' id='rows' value='16'>
-					<input type='text' id='cols' value='16'>
-				</div>
-				<div id="tracker"><div id="loader"></div></div>
-				<div id="loading-message"></div>
+			<video id="myVideo3" width="640" height="360" controls="true">
+				<source src="videos/cutts.mp4" type="video/mp4"></source>
+			</video>
+			<div>
+				<button id="play3">Play</button>
+				<button id="stop3">Stop</button>
+			</div>
 		</div>
 		<div class="canvas-container">
-				<canvas id="canvas2" width="640" height="360">
-					<video id="myVideo2" width="640" height="360" controls="true">
-						<source src="videos/cutts.mp4" type="video/mp4"></source>
-					</video>
-				</canvas>
-				<div>
-					<button id="play2" disabled>Play</button>
-					<button id="stop2">Stop</button>
-					<button id="update2">Update</button>
-				</div>
-				<div>
-					<input type='text' id='rows2' value='32'>
-					<input type='text' id='cols2' value='32'>
-				</div>
-				<div id="tracker2"><div id="loader2"></div></div>
-				<div id="loading-message2"></div>
+			<canvas id="canvas1" width="640" height="360">
+				<video id="myVideo" width="640" height="360" controls="true">
+					<source src="videos/cutts.mp4" type="video/mp4"></source>
+				</video>
+			</canvas>
+			<div>
+				<button id="play" disabled>Play</button>
+				<button id="stop">Stop</button>
+				<button id="update">Update</button>
+			</div>
+			<div>
+				<input type='text' id='rows' value='16'>
+				<input type='text' id='cols' value='16'>
+			</div>
+			<div id="tracker"><div id="loader"></div></div>
+			<div id="loading-message"></div>
+		</div>
+		<div class="canvas-container">
+			<canvas id="canvas2" width="640" height="360">
+				<video id="myVideo2" width="640" height="360" controls="true">
+					<source src="videos/cutts.mp4" type="video/mp4"></source>
+				</video>
+			</canvas>
+			<div>
+				<button id="play2" disabled>Play</button>
+				<button id="stop2">Stop</button>
+				<button id="update2">Update</button>
+			</div>
+			<div>
+				<input type='text' id='rows2' value='32'>
+				<input type='text' id='cols2' value='32'>
+			</div>
+			<div id="tracker2"><div id="loader2"></div></div>
+			<div id="loading-message2"></div>
 		</div>
 		<script>
 			$(document).ready(function(){
 				var video = $("#myVideo");
 				var video2 = $("#myVideo2");
+				var video3 = $("#myVideo3");
+
+				$("#play3").click(function() {
+					video3.get(0).play();
+				});
+
+				$("#stop3").click(function() {
+					video3.get(0).pause();
+				});
+
 
 				$("#play").click(function() {
 					video.get(0).play();
