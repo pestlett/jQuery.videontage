@@ -57,5 +57,8 @@ The image map is a JSON object that contains all the photos to use with the plug
 ## Methods
 1.  update: function(options), will update the options for the next frame of the video
 
+## Example
+[Example 1](http://seo09.clickdev.co.uk/rnd/vtm/example/example.html)
+
 ## Licence
 [WTFPL](http://www.wtfpl.net/about/)
