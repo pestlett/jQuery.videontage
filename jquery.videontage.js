@@ -21,12 +21,10 @@
 (function( $, undefined ) {
 	"use strict"; // What a load of Crockford :p
 
-	var defaults,
-		euclideanDistance, drawFrame, findClosestMatch, preloadResources,
-		video, canvas, ctx, images, opts;
+	var defaults, _uuid, _options, euclideanDistance, drawFrame, findClosestMatch, preloadResources;
 
-	video = ctx = canvas = null;
-	images = {};	// Our images data
+	_options = {};
+	_uuid = 1;
 
 	defaults = {
 		width: 640,
@@ -34,7 +32,7 @@
 		fps: 25,				// Our FPS, need to better implement this and perhaps add a backbuffer &c. if needed
 		cols: 32,				// Number of cols(images) to fit across the canvas
 		rows: 32,				// Number of rows(images) to fit down the canvas
-		distance: 'euclidean',			// Function to call when determining which image in the imageMap is closest (minimum value) to the colour vector
+		distance: 'euclidean',	// Function to call when determining which image in the imageMap is closest (minimum value) to the colour vector
 		afterPreload: null,		// Function to call when the images in the imageMap have all been preloaded
 		duringPreload: null,	// Function to call while the images in the imageMap are being preloaded
 		imageMap: null,			// The imageMap that contains our images and their colour values, ideally want ~2000 images
@@ -59,7 +57,8 @@
 	 * Preload all resources contained in the imageMap
 	 * @return {void}
 	 */
-	preloadResources = function () {
+	preloadResources = function (uuid, images, video, ctx) {
+		var opts = _options[uuid];
 		if (opts.imageMap === null) {
 			$.error('You must have an image map, please see documentation for more details');
 		}
@@ -78,7 +77,7 @@
 					var fn = opts.afterPreload || function () { console.log('Resources Loaded'); };
 					(function () {
 						fn.call(this, opts);
-						$(video).bind("play", drawFrame);
+						$(video).bind("play", {uuid: uuid, images: images, video: video, ctx: ctx}, drawFrame);
 					}());
 				}
 				if (opts.duringPreload !== null) {
@@ -94,7 +93,7 @@
 	 * @param  {object} color The colour vector for which we want to find a match
 	 * @return {mixed}        The index of the matched image in the imageMap
 	 */
-	findClosestMatch = function (color) {
+	findClosestMatch = function (color, opts) {
 		var closest, closestData, images, fn;
 
 		closest = closestData = null;
@@ -118,6 +117,13 @@
 	 * @return {void}
 	 */
 	drawFrame = function (ev) {
+		var opts, video, ctx, images;
+		if (ev === undefined) return false;
+		opts = _options[ev.data.uuid];
+		video = ev.data.video;
+		ctx = ev.data.ctx;
+		images = ev.data.images;
+
 		if (video === null || ctx === null) return false;
 		if (video.get(0).paused || video[0].ended) return false;
 
@@ -151,38 +157,51 @@
 				green = pixels[pos+1];
 				blue = pixels[pos+2];
 
-				index = findClosestMatch ({r:red, b:blue, g:green});
+				index = findClosestMatch ({r:red, b:blue, g:green}, opts);
 
 				ctx.drawImage(images[index], cx, cy, tileWidth, tileHeight);
 			}
 		}
-		setTimeout(drawFrame, opts.fps); // Can probably improve this to actually get the desired FPS
+		setTimeout(function () {
+			drawFrame.call(this, ev);
+		}, opts.fps); // Can probably improve this to actually get the desired FPS
 	};
 
 	var methods = {
 		init: function (options) {
-			options = $.extend({}, options);
-			opts = $.extend(defaults, options);
+
+			var video, canvas, ctx, images, opts, that;
+
+			video = ctx = canvas = null;
+			images = {};	// Our images data
+			that = this;
+
 			// If no width has been specified and there is a width on the canvas element, use that rather than the default
 			if (options.width === undefined) {
 				if (this.prop('width') !== undefined) {
-					opts.width = this.prop('width');
+					options.width = this.prop('width');
 				}else if ($(this).width() !== undefined){
-					opts.width = $(this).width();
+					options.width = $(this).width();
 				}
 			}
 			// If no height has been specified and there is a height on the canvas element, use that rather than the default
 			if (options.height === undefined) {
 				if (this.prop('height') !== undefined) {
-					opts.height = this.prop('height');
+					options.height = this.prop('height');
 				}else if ($(this).height() !== undefined){
-					opts.height = $(this).height();
+					options.height = $(this).height();
 				}
 			}
 
 			return this.each(function () {
 				var $this;
 				$this = $(this);
+
+				if (_options[_uuid] === undefined) {
+					_options[_uuid] = $.extend({}, defaults, options);
+				}
+
+				$.data(this, 'uuid', _uuid);
 
 				canvas = $this[0];
 				ctx = canvas.getContext('2d');
@@ -193,7 +212,8 @@
 					$.error('You must have a video element inside the canvas element');
 				}
 
-				preloadResources();
+				preloadResources(_uuid, images, video, ctx);
+				_uuid++;
 			});
 		},
 
@@ -203,8 +223,10 @@
 		 * @return {void}
 		 */
 		update: function (newOptions) {
-			newOptions = $.extend({}, newOptions);
-			opts = $.extend(opts, newOptions);
+			this.each( function () {
+				var uuid = $.data(this, 'uuid');
+				_options[uuid] = $.extend({}, _options[uuid], newOptions);
+			});
 		}
 	};
 

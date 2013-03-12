@@ -13,8 +13,8 @@
 		<link rel="stylesheet" href="style/default.css" type="text/css">
 	</head>
 	<body>
-		<div>
-				<canvas width="640" height="360">
+		<div class="canvas-container">
+				<canvas id="canvas1" width="640" height="360">
 					<video id="myVideo" width="640" height="360" controls="true">
 						<source src="videos/cutts.mp4" type="video/mp4"></source>
 					</video>
@@ -31,9 +31,29 @@
 				<div id="tracker"><div id="loader"></div></div>
 				<div id="loading-message"></div>
 		</div>
+		<div class="canvas-container">
+				<canvas id="canvas2" width="640" height="360">
+					<video id="myVideo2" width="640" height="360" controls="true">
+						<source src="videos/cutts.mp4" type="video/mp4"></source>
+					</video>
+				</canvas>
+				<div>
+					<button id="play2" disabled>Play</button>
+					<button id="stop2">Stop</button>
+					<button id="update2">Update</button>
+				</div>
+				<div>
+					<input type='text' id='rows2' value='32'>
+					<input type='text' id='cols2' value='32'>
+				</div>
+				<div id="tracker2"><div id="loader2"></div></div>
+				<div id="loading-message2"></div>
+		</div>
 		<script>
 			$(document).ready(function(){
 				var video = $("#myVideo");
+				var video2 = $("#myVideo2");
+
 				$("#play").click(function() {
 					video.get(0).play();
 				});
@@ -46,10 +66,25 @@
 					var rows = $('input#rows').val();
 					var cols = $('input#cols').val();
 					var data = { rows: rows, cols: cols };
-					$('canvas').videontage('update', data);
+					$('canvas#canvas1').videontage('update', data);
 				})
 
-				$('canvas').videontage({
+				$("#play2").click(function() {
+					video2.get(0).play();
+				});
+
+				$("#stop2").click(function() {
+					video2.get(0).pause();
+				});
+
+				$("#update2").click(function() {
+					var rows = $('input#rows2').val();
+					var cols = $('input#cols2').val();
+					var data = { rows: rows, cols: cols };
+					$('canvas#canvas2').videontage('update', data);
+				})
+
+				$('canvas#canvas1').videontage({
 					imagePath: 'img/cutts/',
 					imageMap: cuttsMap,
 					cols: $('input#cols').val(),
@@ -63,6 +98,23 @@
 						var percentage = (data.count / data.total) * max;
 						$('div#loader').css('width', percentage+'px');
 						$('div#loading-message').html( Math.round( ((100 * data.count) / data.total), 2 ) + "% loaded");
+					}
+				});
+
+				$('canvas#canvas2').videontage({
+					imagePath: 'img/cutts/',
+					imageMap: cuttsMap,
+					cols: $('input#cols2').val(),
+					rows: $('input#rows2').val(),
+					afterPreload: function (opt) {
+						$('button#play2').prop('disabled', null);
+						$('div#loading-message2').html("All images preloaded");
+					},
+					duringPreload: function (data) {
+						var max = parseInt( $('div#loader2').css('max-width') );
+						var percentage = (data.count / data.total) * max;
+						$('div#loader2').css('width', percentage+'px');
+						$('div#loading-message2').html( Math.round( ((100 * data.count) / data.total), 2 ) + "% loaded");
 					}
 				});
 			});

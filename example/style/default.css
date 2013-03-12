@@ -1,7 +1,8 @@
 * { margin: 0; padding: 0; }
 html, body { height: 100%; width: 100%; }
 canvas { display: block; }
-div#tracker {
+div#tracker,
+div#tracker2 {
 	min-width: 400px;
 	min-height: 12px;
 	max-width: 400px;
@@ -11,7 +12,8 @@ div#tracker {
 	padding: 1px;
 }
 
-div#loader {
+div#loader,
+div#loader2 {
 	width: 0px;
 	min-width: 0px;
 	min-height: 12px;
@@ -19,3 +21,4 @@ div#loader {
 	max-height: 12px;
 	background-color: #8bcfe5;
 }
+.canvas-container{ float: left; }
