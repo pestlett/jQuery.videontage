@@ -1,0 +1,40 @@
+<html>
+<head>
+	<title>Image Map generation</title>
+	<script src="js/color-thief-master/js/libs/jquery-1.6.2.min.js"></script>
+	<script src="js/color-thief-master/js/libs/quantize.js"></script>
+	<script src="js/color-thief-master/js/color-thief.js"></script>
+</head>
+<body>
+	An example of generating an imagemap
+	<textarea id="data"></textarea>	
+	<script>
+		var i = 1;
+		var imageArray = {};
+
+		for(; i<=456; i++){
+			var filename = "default("+i+").jpg";
+
+			var image = new Image();
+
+			$(image).bind('load', {pos: i}, function(ev){
+				var dominantColor = getDominantColor(ev.target);
+				var dominantColourObj = {
+					r: dominantColor[0],
+					g: dominantColor[1],
+					b: dominantColor[2]
+				}
+				var img = { "filename" : ev.target.src, "dominantColor": dominantColourObj };
+				var index = img.filename;
+				// console.log("Processed image: " + img.filename, ev.data.pos);
+				imageArray[index] = img;
+				if(ev.data.pos === 456){
+					$('textarea#data').val(JSON.stringify(imageArray));
+				}
+			});
+
+			image.src = 'img/cutts/'+filename;
+		}
+	</script>
+</body>
+</html>
